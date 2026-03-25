@@ -6,7 +6,7 @@ const Listing = require("../models/listing");
 const Review = require("../models/review");
 
 async function backfillOwnership() {
-  const mongoUri = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/wonderlust";
+  const mongoUri = process.env.DB_URL || "mongodb://127.0.0.1:27017/wonderlust";
   await mongoose.connect(mongoUri);
 
   const userEmail = process.env.BACKFILL_USER_EMAIL;
