@@ -1,4 +1,4 @@
-const MongoStore = require("connect-mongo");
+const { MongoStore } = require("connect-mongo");
 
 const dbUrl = process.env.DB_URL || "mongodb://127.0.0.1:27017/wonderlust";
 
@@ -10,8 +10,8 @@ const store = MongoStore.create({
   touchAfter: 24 * 3600,
 });
 
-store.on("error", () => {
-  console.log("Session store error");
+store.on("error", (err) => {
+  console.log("Session store error", err);
 });
 
 const sessionOptions = {
