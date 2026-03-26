@@ -33,9 +33,9 @@ app.use(
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", "https://cdn.jsdelivr.net"],
+        scriptSrc: ["'self'", "https://cdn.jsdelivr.net", "https://cdn.tailwindcss.com"],
         styleSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com"],
-        imgSrc: ["'self'", "data:", "blob:", "https://res.cloudinary.com"],
+        imgSrc: ["'self'", "data:", "blob:", "https:", "https://res.cloudinary.com"],
         fontSrc: ["'self'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com"],
         connectSrc: ["'self'"],
         objectSrc: ["'none'"],
@@ -45,11 +45,25 @@ app.use(
     },
   })
 );
-app.use(mongoSanitize());
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
+app.use((req, res, next) => {
+  if (req.body) {
+    mongoSanitize.sanitize(req.body);
+  }
+
+  if (req.query) {
+    mongoSanitize.sanitize(req.query);
+  }
+
+  if (req.params) {
+    mongoSanitize.sanitize(req.params);
+  }
+
+  next();
+});
 app.use(session(sessionConfig));
 app.use(flash());
 app.use(passport.initialize());
@@ -57,7 +71,7 @@ app.use(passport.session());
 app.use(setFlashLocals);
 
 app.get("/", (req, res) => {
-  res.send("Welcome to Airbnb Clone");
+  res.render("home.ejs");
 });
 
 app.use("/auth", authRoutes);

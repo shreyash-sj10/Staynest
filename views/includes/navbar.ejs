@@ -1,20 +1,56 @@
-<div class="navbar_container">
-  <div class="nav_head">
-    <i class="fa-solid fa-compass"></i>
-    <p>airbnb</p>
-  </div>
-  <a href="/"><button>Home</button></a>
-  <a href="/listings"><button>All Listings</button></a>
-  <a href="/listings/new"><button>Add New Listing</button></a>
+<nav class="sticky top-0 z-50 border-b border-slate-200 bg-white/90 backdrop-blur">
+  <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-6 py-4 lg:px-8">
+    <a href="/" class="flex items-center gap-3">
+      <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-rose-500 text-lg text-white shadow-sm">
+        <i class="fa-solid fa-compass"></i>
+      </div>
+      <div>
+        <p class="text-xs font-semibold uppercase tracking-[0.35em] text-slate-400">Stay inspired</p>
+        <p class="text-lg font-bold text-slate-900">Wanderlust</p>
+      </div>
+    </a>
 
-  <div class="auth_nav">
-    <% if (currentUser) { %>
-      <span class="nav_user">Hi, <%= currentUser.username %></span>
-      <a href="/auth/logout"><button>Logout</button></a>
-    <% } else { %>
-      <a href="/auth/login"><button>Login</button></a>
-      <a href="/auth/signup"><button>Signup</button></a>
-      <a href="/auth/google"><button class="google_btn">Google</button></a>
-    <% } %>
+    <div class="flex flex-wrap items-center gap-3 text-sm font-medium text-slate-600">
+      <a class="rounded-full px-4 py-2 transition hover:bg-slate-100 hover:text-slate-900" href="/">Home</a>
+      <a class="rounded-full px-4 py-2 transition hover:bg-slate-100 hover:text-slate-900" href="/listings">Listings</a>
+      <% if (currentUser) { %>
+        <a class="rounded-full px-4 py-2 transition hover:bg-slate-100 hover:text-slate-900" href="/listings/new">Host a Stay</a>
+      <% } %>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-3">
+      <% if (currentUser) { %>
+        <span class="hidden rounded-full bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700 sm:inline-flex">
+          <i class="fa-regular fa-user mr-2 mt-0.5"></i>
+          <%= currentUser.username %>
+        </span>
+        <a
+          href="/auth/logout"
+          class="inline-flex items-center justify-center rounded-full border border-slate-300 px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-slate-900 hover:text-slate-900"
+        >
+          Logout
+        </a>
+      <% } else { %>
+        <a
+          href="/auth/login"
+          class="inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
+        >
+          Login
+        </a>
+        <a
+          href="/auth/signup"
+          class="inline-flex items-center justify-center rounded-full border border-slate-300 px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-slate-900 hover:text-slate-900"
+        >
+          Signup
+        </a>
+        <a
+          href="/auth/google"
+          class="inline-flex items-center justify-center rounded-full bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700"
+        >
+          <i class="fa-brands fa-google mr-2"></i>
+          Google
+        </a>
+      <% } %>
+    </div>
   </div>
-</div>
+</nav>

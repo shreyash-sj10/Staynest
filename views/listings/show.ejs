@@ -1,100 +1,146 @@
-<% layout("/layout/boilerplate.ejs")%>
-<body>
-  <div class="listing_details">
-    <h2><%= myListings.title %></h2>
+<% layout("/layout/boilerplate.ejs") %>
 
-    <img
-      class="listing_image"
-      src="<%= myListings.image.url %>"
-      alt="Listing Image"
-    />
+<section class="mx-auto max-w-6xl px-6 py-12 lg:px-8">
+  <div class="grid gap-10 lg:grid-cols-[1.2fr_0.8fr]">
+    <div class="space-y-8">
+      <div class="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm">
+        <img
+          class="h-[420px] w-full object-cover"
+          src="<%= myListings.image.url %>"
+          alt="<%= myListings.title %>"
+        />
+      </div>
 
-    <p><b>Description:</b> <%= myListings.description %></p>
+      <div class="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm">
+        <div class="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <p class="text-sm font-semibold uppercase tracking-[0.3em] text-rose-500">Stay Details</p>
+            <h1 class="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl"><%= myListings.title %></h1>
+            <div class="mt-4 flex flex-wrap items-center gap-4 text-sm text-slate-500">
+              <span class="inline-flex items-center gap-2">
+                <i class="fa-solid fa-location-dot text-rose-500"></i>
+                <%= myListings.location %>, <%= myListings.country %>
+              </span>
+              <% if (myListings.owner) { %>
+                <span class="inline-flex items-center gap-2">
+                  <i class="fa-regular fa-user text-rose-500"></i>
+                  Hosted by <%= myListings.owner.username %>
+                </span>
+              <% } %>
+            </div>
+          </div>
+          <div class="rounded-[1.5rem] bg-slate-900 px-5 py-4 text-white shadow-sm">
+            <p class="text-xs uppercase tracking-[0.25em] text-slate-300">Price</p>
+            <p class="mt-2 text-2xl font-bold">$<%= myListings.price %><span class="text-sm font-medium text-slate-300"> / night</span></p>
+          </div>
+        </div>
 
-    <div class="locn">
-      <p><b>Location:</b> <%= myListings.location %></p>
-      <p><b>Country:</b> <%= myListings.country %></p>
+        <div class="mt-8 border-t border-slate-200 pt-8">
+          <h2 class="text-lg font-semibold text-slate-900">About this stay</h2>
+          <p class="mt-4 text-sm leading-7 text-slate-600"><%= myListings.description %></p>
+        </div>
+
+        <% if (currentUser && myListings.owner && String(currentUser._id) === String(myListings.owner._id)) { %>
+          <div class="mt-8 flex flex-wrap gap-3 border-t border-slate-200 pt-8">
+            <form
+              action="/listings/<%= myListings._id %>?_method=DELETE"
+              method="POST"
+            >
+              <button class="inline-flex items-center justify-center rounded-full bg-rose-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-rose-600">
+                Delete Listing
+              </button>
+            </form>
+
+            <form action="/listings/<%= myListings._id %>/edit" method="GET">
+              <button class="inline-flex items-center justify-center rounded-full border border-slate-300 px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-900 hover:text-slate-900">
+                Edit Listing
+              </button>
+            </form>
+          </div>
+        <% } %>
+      </div>
     </div>
 
-    <p><b>Price:</b> $<%= myListings.price %>/night</p>
-    <% if (myListings.owner) { %>
-      <p><b>Host:</b> <%= myListings.owner.username %></p>
-    <% } %>
-
-    <% if (currentUser && myListings.owner && String(currentUser._id) === String(myListings.owner._id)) { %>
-      <div class="edit_delete_btn">
-        <form
-          action="/listings/<%= myListings._id %>?_method=DELETE"
-          method="POST"
-        >
-          <button class="delete_btn">DELETE</button>
-        </form>
-
-        <form action="/listings/<%= myListings._id %>/edit" method="GET">
-          <button class="edit_btn">EDIT</button>
-        </form>
-      </div>
-    <% } %>
-
-    <hr />
-    <hr />
-    <hr />
-
-    <div class="createReview">
-      <% if (currentUser) { %>
-        <h4>Leave a Review</h4>
-        <form action="/listings/<%= myListings._id %>/reviews" method="POST">
-          <div class="rating-review">
-            <label for="rating">Rating</label>
-            <input
-              type="range"
-              id="rating"
-              name="review[rating]"
-              min="1"
-              max="5"
-              step="1"
-              required
-            />
+    <div class="space-y-8">
+      <div class="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-semibold uppercase tracking-[0.3em] text-rose-500">Guest Reviews</p>
+            <h2 class="mt-2 text-2xl font-bold text-slate-900">Share your stay</h2>
           </div>
-
-          <div class="comment-review">
-            <label for="comments">Comments</label>
-            <textarea
-              id="comments"
-              name="review[comments]"
-              cols="30"
-              rows="5"
-              placeholder="Write your thoughts..."
-              required="required"
-            ></textarea>
+          <div class="rounded-full bg-slate-100 px-4 py-2 text-sm font-medium text-slate-600">
+            <%= myListings.reviews.length %> review<%= myListings.reviews.length === 1 ? "" : "s" %>
           </div>
+        </div>
 
-          <button type="submit">Submit</button>
-        </form>
-      <% } else { %>
-        <h4>Leave a Review</h4>
-        <p>Please <a href="/auth/login">login</a> to add a review.</p>
-      <% } %>
+        <% if (currentUser) { %>
+          <form class="mt-8 space-y-5" action="/listings/<%= myListings._id %>/reviews" method="POST">
+            <div>
+              <label class="mb-2 block text-sm font-semibold text-slate-700" for="rating">Rating</label>
+              <input
+                class="w-full accent-rose-500"
+                type="range"
+                id="rating"
+                name="review[rating]"
+                min="1"
+                max="5"
+                step="1"
+                required
+              />
+            </div>
 
-      <h4>All Reviews</h4>
-      <% for(let review of myListings.reviews) {%>
-      <div class="allReviews">
-        <p><b>Rating:</b> <%= review.rating %> / 5</p>
-        <p><b>Comments:</b> <%= review.comments %></p>
-        <% if (review.author) { %>
-          <p><b>By:</b> <%= review.author.username %></p>
-        <% } %>
-        <% if (currentUser && review.author && String(currentUser._id) === String(review.author._id)) { %>
-          <form
-            action="/listings/<%= myListings._id %>/reviews/<%= review._id %>?_method=DELETE"
-            method="POST"
-          >
-            <button>Delete</button>
+            <div>
+              <label class="mb-2 block text-sm font-semibold text-slate-700" for="comments">Comments</label>
+              <textarea
+                class="min-h-[140px] w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-900/10"
+                id="comments"
+                name="review[comments]"
+                placeholder="Write your thoughts..."
+                required
+              ></textarea>
+            </div>
+
+            <button class="inline-flex w-full items-center justify-center rounded-full bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-700" type="submit">
+              Submit Review
+            </button>
           </form>
+        <% } else { %>
+          <div class="mt-8 rounded-[1.5rem] border border-dashed border-slate-300 bg-slate-50 p-6 text-sm leading-7 text-slate-600">
+            Please <a class="font-semibold text-slate-900 underline" href="/auth/login">log in</a> to add a review.
+          </div>
         <% } %>
-        <hr />
       </div>
-      <% } %>
+
+      <div class="space-y-4">
+        <% if (myListings.reviews.length === 0) { %>
+          <div class="rounded-[2rem] border border-slate-200 bg-white p-6 text-sm text-slate-500 shadow-sm">
+            No reviews yet. Be the first guest to leave feedback.
+          </div>
+        <% } %>
+        <% for (let review of myListings.reviews) { %>
+          <article class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
+            <div class="flex items-start justify-between gap-4">
+              <div>
+                <p class="text-lg font-semibold text-slate-900"><%= review.rating %> / 5</p>
+                <% if (review.author) { %>
+                  <p class="mt-1 text-xs font-semibold uppercase tracking-[0.25em] text-slate-400"><%= review.author.username %></p>
+                <% } %>
+              </div>
+              <% if (currentUser && review.author && String(currentUser._id) === String(review.author._id)) { %>
+                <form
+                  action="/listings/<%= myListings._id %>/reviews/<%= review._id %>?_method=DELETE"
+                  method="POST"
+                >
+                  <button class="rounded-full border border-rose-200 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-rose-500 transition hover:border-rose-500 hover:bg-rose-50">
+                    Delete
+                  </button>
+                </form>
+              <% } %>
+            </div>
+            <p class="mt-4 text-sm leading-7 text-slate-600"><%= review.comments %></p>
+          </article>
+        <% } %>
+      </div>
     </div>
   </div>
-</body>
+</section>
