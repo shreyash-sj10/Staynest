@@ -1,7 +1,7 @@
 <% layout("/layout/boilerplate.ejs") %>
 
-<section class="mx-auto flex min-h-[80vh] max-w-7xl items-center justify-center px-6 py-12 lg:px-8">
-  <div class="grid w-full max-w-5xl overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-xl shadow-slate-200/70 lg:grid-cols-[0.95fr_1.05fr]">
+<section class="mx-auto flex min-h-[82vh] max-w-7xl items-center justify-center px-6 py-14 lg:px-8">
+  <div class="grid w-full max-w-5xl overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-2xl shadow-slate-200/70 lg:grid-cols-[0.95fr_1.05fr]">
     <div class="hidden bg-slate-900 p-10 text-white lg:flex lg:flex-col lg:justify-between">
       <div>
         <p class="text-sm font-semibold uppercase tracking-[0.3em] text-rose-200">Welcome Back</p>
@@ -11,7 +11,7 @@
         </p>
       </div>
       <div class="rounded-[1.5rem] border border-white/10 bg-white/5 p-5 text-sm text-slate-300">
-        Local auth and Google OAuth are both available, backed by Passport and persistent Mongo sessions.
+        Local authentication and Google OAuth are both available, backed by Passport and persistent Mongo sessions.
       </div>
     </div>
 
@@ -33,7 +33,7 @@
           <input class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-900/10" id="password" type="password" name="password" required />
         </div>
 
-        <button class="inline-flex w-full items-center justify-center rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-slate-700" type="submit">
+        <button class="inline-flex w-full items-center justify-center rounded-full bg-slate-900 px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-slate-700" type="submit">
           Login
         </button>
       </form>
@@ -44,7 +44,7 @@
         <span class="h-px flex-1 bg-slate-200"></span>
       </div>
 
-      <a href="/auth/google" class="inline-flex w-full items-center justify-center rounded-full border border-slate-300 px-6 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-900 hover:text-slate-900">
+      <a href="/auth/google" class="inline-flex w-full items-center justify-center rounded-full border border-slate-300 px-6 py-3.5 text-sm font-semibold text-slate-700 transition hover:border-slate-900 hover:text-slate-900">
         <i class="fa-brands fa-google mr-3 text-base"></i>
         Login with Google
       </a>
