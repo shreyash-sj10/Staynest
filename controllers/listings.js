@@ -1,13 +1,14 @@
 const Listing = require("../models/listing");
 const ExpressError = require("../utils/ExpressError");
+const { cloudinary } = require("../config/cloudinary");
+const { DEFAULT_LISTING_IMAGE } = require("../config/constants");
 
 function buildListingData(body) {
-  const { title, description, image, price, location, country } = body;
+  const { title, description, price, location, country } = body;
 
   return {
     title,
     description,
-    image: { url: image },
     price,
     location,
     country,
@@ -36,6 +37,13 @@ module.exports.renderNewForm = async (req, res) => {
 module.exports.createListing = async (req, res) => {
   const newListing = new Listing(buildListingData(req.body));
   newListing.owner = req.user._id;
+
+  if (req.file) {
+    newListing.image = {
+      url: req.file.path,
+      filename: req.file.filename,
+    };
+  }
 
   await newListing.save();
   req.flash("success", "Successfully made a new listing");
@@ -66,10 +74,30 @@ module.exports.showListing = async (req, res) => {
 
 module.exports.updateListing = async (req, res) => {
   const { id } = req.params;
-  const updatedListing = await Listing.findByIdAndUpdate(id, buildListingData(req.body));
+  const updatedListing = await Listing.findByIdAndUpdate(id, buildListingData(req.body), {
+    new: true,
+    runValidators: true,
+  });
 
   if (!updatedListing) {
     throw new ExpressError(404, "Listing not found");
+  }
+
+  if (req.file) {
+    if (
+      updatedListing.image &&
+      updatedListing.image.filename &&
+      updatedListing.image.filename !== DEFAULT_LISTING_IMAGE.filename
+    ) {
+      await cloudinary.uploader.destroy(updatedListing.image.filename);
+    }
+
+    updatedListing.image = {
+      url: req.file.path,
+      filename: req.file.filename,
+    };
+
+    await updatedListing.save();
   }
 
   res.redirect(`/listings/${id}`);
@@ -80,6 +108,14 @@ module.exports.deleteListing = async (req, res) => {
 
   if (!deletedListing) {
     throw new ExpressError(404, "Listing not found");
+  }
+
+  if (
+    deletedListing.image &&
+    deletedListing.image.filename &&
+    deletedListing.image.filename !== DEFAULT_LISTING_IMAGE.filename
+  ) {
+    await cloudinary.uploader.destroy(deletedListing.image.filename);
   }
 
   res.redirect("/listings");

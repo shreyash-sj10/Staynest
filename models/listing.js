@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 const Review = require("./review");
+const { DEFAULT_LISTING_IMAGE } = require("../config/constants");
 
 const listingSchema = new mongoose.Schema({
   title: {
@@ -14,10 +15,11 @@ const listingSchema = new mongoose.Schema({
   image: {
     url: {
       type: String,
-      set: (v) =>
-        v === "" || v == null
-          ? "https://media.istockphoto.com/id/2186884332/photo/coconut-palm-trees-and-beautiful-turquoise-sea-on-tropical-paradise-beach.jpg?s=1024x1024&w=is&k=20&c=yyQK2y3Vucm_eh3xuNhDSi8QwKKwZFgwFALlvm6FFQE="
-          : v,
+      default: DEFAULT_LISTING_IMAGE.url,
+    },
+    filename: {
+      type: String,
+      default: DEFAULT_LISTING_IMAGE.filename,
     },
   },
   price: Number,
